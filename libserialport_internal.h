@@ -41,10 +41,8 @@
 #include <config.h>
 #endif
 
-#ifdef LIBSERIALPORT_MSBUILD
-/* If building with MS tools, define necessary things that
-   would otherwise appear in config.h. */
-#define SP_PRIV
+#ifdef _MSC_VER
+	#define SP_PRIV
 #endif
 
 #include "libserialport.h"

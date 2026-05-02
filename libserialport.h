@@ -230,7 +230,7 @@
  * and @c write() calls.
  *
  * In libserialport, blocking and nonblocking operations are both available at
- * any time. If your existing code ѕets @c O_NONBLOCK, you should use
+ * any time. If your existing code sets @c O_NONBLOCK, you should use
  * sp_nonblocking_read() and sp_nonblocking_write() to get the same behaviour
  * as your existing @c read() and @c write() calls. If it does not, you should
  * use sp_blocking_read() and sp_blocking_write() instead. You may also find
@@ -280,21 +280,24 @@ extern "C" {
 
 /** @cond */
 #ifdef _MSC_VER
-/* Microsoft Visual C/C++ compiler in use */
-#ifdef LIBSERIALPORT_MSBUILD
-/* Building the library - need to export DLL symbols */
-#define SP_API  //__declspec(dllexport)
+	/* Microsoft Visual C/C++ compiler in use. */
+	# ifdef LIBSERIALPORT_STATIC
+		/* Using/building libserialport as a static library. */
+		#  define SP_API
+	# elif defined(LIBSERIALPORT_MSBUILD)
+		/* Building libserialport as a DLL. */
+		#  define SP_API __declspec(dllexport)
+	# else
+		/* Using libserialport as a DLL. */
+		#  define SP_API __declspec(dllimport)
+	# endif
 #else
-/* Using the library - need to import DLL symbols */
-#define SP_API __declspec(dllimport)
+	/* Non-MSVC compiler. */
+	# ifndef LIBSERIALPORT_ATBUILD
+		#  define SP_API
+	# endif
 #endif
-#else
-/* Some other compiler in use */
-#ifndef LIBSERIALPORT_ATBUILD
-/* Not building the library itself - don't need any special prefixes. */
-#define SP_API
-#endif
-#endif
+/** @endcond */
 /** @endcond */
 
 /** Return values. */
